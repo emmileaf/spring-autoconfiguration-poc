@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Bean;
 @ConditionalOnClass(ImageAnnotatorClient.class)
 @ConditionalOnProperty(
         value = "com.google.cloud.vision.v1.image-annotator.enabled",
-        matchIfMissing = false)
+        matchIfMissing = true)
 @EnableConfigurationProperties(ImageAnnotatorSpringProperties.class)
 public class ImageAnnotatorSpringAutoConfiguration {
   private final ImageAnnotatorSpringProperties clientProperties;

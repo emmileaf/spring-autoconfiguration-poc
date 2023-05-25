@@ -32,7 +32,7 @@ import java.io.IOException;
 @ConditionalOnClass(ProductSearchClient.class)
 @ConditionalOnProperty(
         value = "com.google.cloud.vision.v1.product-search.enabled",
-        matchIfMissing = false)
+        matchIfMissing = true)
 @EnableConfigurationProperties(ProductSearchSpringProperties.class)
 public class ProductSearchSpringAutoConfiguration {
   private final ProductSearchSpringProperties clientProperties;

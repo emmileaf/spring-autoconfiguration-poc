@@ -50,4 +50,40 @@ class VisionAutoConfigurationTest {
                                     .isInstanceOf(NoSuchBeanDefinitionException.class);
                         });
     }
+
+    @Test
+    void testTransportDefault() {
+        this.contextRunner
+                .run(
+                        ctx -> {
+                            ImageAnnotatorClient imageAnnotatorClient = ctx.getBean(ImageAnnotatorClient.class);
+                            assertThat(imageAnnotatorClient).isNotNull();
+                            assertThat(imageAnnotatorClient.getSettings().getTransportChannelProvider().getTransportName()).isEqualTo("grpc");
+
+                            ProductSearchClient productSearchClient = ctx.getBean(ProductSearchClient.class);
+                            assertThat(productSearchClient).isNotNull();
+                            assertThat(productSearchClient.getSettings().getTransportChannelProvider().getTransportName()).isEqualTo("grpc");
+
+                        });
+    }
+    @Test
+    void testSetTransportFromProperties() {
+        this.contextRunner
+                .withPropertyValues(
+                        "com.google.cloud.vision.v1.image-annotator.transport=REST",
+                        "com.google.cloud.vision.v1.product-search.transport=rest"
+
+                )
+                .run(
+                        ctx -> {
+                            ImageAnnotatorClient imageAnnotatorClient = ctx.getBean(ImageAnnotatorClient.class);
+                            assertThat(imageAnnotatorClient).isNotNull();
+                            assertThat(imageAnnotatorClient.getSettings().getTransportChannelProvider().getTransportName()).isEqualTo("httpjson");
+
+                            ProductSearchClient productSearchClient = ctx.getBean(ProductSearchClient.class);
+                            assertThat(productSearchClient).isNotNull();
+                            assertThat(productSearchClient.getSettings().getTransportChannelProvider().getTransportName()).isEqualTo("httpjson");
+
+                        });
+    }
 }

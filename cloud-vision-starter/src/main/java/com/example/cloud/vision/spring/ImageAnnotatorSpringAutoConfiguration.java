@@ -57,7 +57,7 @@ public class ImageAnnotatorSpringAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "defaultImageAnnotatorTransportChannelProvider")
   public TransportChannelProvider defaultImageAnnotatorTransportChannelProvider() {
-    if (this.clientProperties.getUseRest()) {
+    if (this.clientProperties.getTransport() == Shared.TransportType.REST) {
       return ImageAnnotatorSettings.defaultHttpJsonTransportProviderBuilder().build();
     }
     return ImageAnnotatorSettings.defaultTransportChannelProvider();
@@ -70,7 +70,7 @@ public class ImageAnnotatorSpringAutoConfiguration {
           TransportChannelProvider defaultTransportChannelProvider) throws IOException {
 
     ImageAnnotatorSettings.Builder clientSettingsBuilder;
-    if (this.clientProperties.getUseRest()) {
+    if (this.clientProperties.getTransport() == Shared.TransportType.REST) {
       clientSettingsBuilder = ImageAnnotatorSettings.newHttpJsonBuilder();
     } else {
       clientSettingsBuilder = ImageAnnotatorSettings.newBuilder();

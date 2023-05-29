@@ -57,7 +57,7 @@ public class ProductSearchSpringAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "defaultProductSearchTransportChannelProvider")
   public TransportChannelProvider defaultProductSearchTransportChannelProvider() {
-    if (this.clientProperties.getUseRest()) {
+    if (this.clientProperties.getTransport() == Shared.TransportType.REST) {
       return ProductSearchSettings.defaultHttpJsonTransportProviderBuilder().build();
     }
     return ProductSearchSettings.defaultTransportChannelProvider();
@@ -70,7 +70,7 @@ public class ProductSearchSpringAutoConfiguration {
           TransportChannelProvider defaultTransportChannelProvider) throws IOException {
 
     ProductSearchSettings.Builder clientSettingsBuilder;
-    if (this.clientProperties.getUseRest()) {
+    if (this.clientProperties.getTransport() == Shared.TransportType.REST) {
       clientSettingsBuilder = ProductSearchSettings.newHttpJsonBuilder();
     } else {
       clientSettingsBuilder = ProductSearchSettings.newBuilder();

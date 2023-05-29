@@ -55,7 +55,7 @@ public class ProductSearchSpringAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingBean(name = "defaultProductSearchTransportChannelProvider")
   public TransportChannelProvider defaultProductSearchTransportChannelProvider() {
     if (this.clientProperties.getUseRest()) {
       return ProductSearchSettings.defaultHttpJsonTransportProviderBuilder().build();

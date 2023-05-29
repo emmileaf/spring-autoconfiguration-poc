@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,9 +31,10 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnClass(ImageAnnotatorClient.class)
-@ConditionalOnProperty(
-        value = "com.google.cloud.vision.v1.image-annotator.enabled",
-        matchIfMissing = true)
+// Check for explicit enabling on service level (treat as false if not set),
+// Or blanket module-level enabling (treat as true if not set) without explicit disabling on service level
+@ConditionalOnExpression(
+        "{${com.google.cloud.vision.v1.image-annotator.enabled:false} == true} || {${com.google.cloud.vision.v1.all-services.enabled:true} != false && ${com.google.cloud.vision.v1.image-annotator.enabled:true} != false}")
 @EnableConfigurationProperties(ImageAnnotatorSpringProperties.class)
 public class ImageAnnotatorSpringAutoConfiguration {
   private final ImageAnnotatorSpringProperties clientProperties;

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,9 +31,10 @@ import java.io.IOException;
 @AutoConfiguration
 @AutoConfigureAfter(GcpContextAutoConfiguration.class)
 @ConditionalOnClass(ProductSearchClient.class)
-@ConditionalOnProperty(
-        value = "com.google.cloud.vision.v1.product-search.enabled",
-        matchIfMissing = true)
+// Check for explicit enabling on service level (treat as false if not set),
+// Or blanket module-level enabling (treat as true if not set) without explicit disabling on service level
+@ConditionalOnExpression(
+        "{${com.google.cloud.vision.v1.product-search.enabled:false} == true} || {${com.google.cloud.vision.v1.all-services.enabled:true} != false && ${com.google.cloud.vision.v1.product-search.enabled:true} != false}")
 @EnableConfigurationProperties(ProductSearchSpringProperties.class)
 public class ProductSearchSpringAutoConfiguration {
   private final ProductSearchSpringProperties clientProperties;

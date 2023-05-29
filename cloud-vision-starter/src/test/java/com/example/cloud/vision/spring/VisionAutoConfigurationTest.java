@@ -32,17 +32,68 @@ class VisionAutoConfigurationTest {
                             assertThat(productSearchClient).isNotNull();
                         });
     }
+
     @Test
-    void testServiceDisabledFromProperties() {
+    void testEnableAllByDefaultAndDisableByService() {
         this.contextRunner
                 .withPropertyValues(
-                        "com.google.cloud.vision.v1.image-annotator.enabled=false"
+                        "com.google.cloud.vision.v1.product-search.enabled=false"
+
+                )
+                .run(
+                        ctx -> {
+                            System.out.println("Beans: ");
+                            for (String bean : ctx.getBeanDefinitionNames()) {
+                                System.out.println(bean);
+                            }
+                            // Expected:
+                            // ImageAnnotatorClient autoconfiguration enabled (default, blanketly)
+                            // ProductSearchClient autoconfiguration disabled (explicitly)
+                            ImageAnnotatorClient imageAnnotatorClient = ctx.getBean(ImageAnnotatorClient.class);
+                            assertThat(imageAnnotatorClient).isNotNull();
+                            assertThatThrownBy(
+                                    () -> ctx.getBean(ProductSearchClient.class))
+                                    .isInstanceOf(NoSuchBeanDefinitionException.class);
+                        });
+    }
+
+    @Test
+    void testEnableAllAndDisableByService() {
+        this.contextRunner
+                .withPropertyValues(
+                        "com.google.cloud.vision.v1.all-services.enabled=true",
+                        "com.google.cloud.vision.v1.product-search.enabled=false"
+
+                )
+                .run(
+                        ctx -> {
+                            // Expected:
+                            // ImageAnnotatorClient autoconfiguration enabled (default, blanketly)
+                            // ProductSearchClient autoconfiguration disabled (explicitly)
+                            ImageAnnotatorClient imageAnnotatorClient = ctx.getBean(ImageAnnotatorClient.class);
+                            assertThat(imageAnnotatorClient).isNotNull();
+                            assertThatThrownBy(
+                                    () -> ctx.getBean(ProductSearchClient.class))
+                                    .isInstanceOf(NoSuchBeanDefinitionException.class);
+                        });
+    }
+
+    @Test
+    void testDisableAllAndEnableByService() {
+        this.contextRunner
+                .withPropertyValues(
+                        "com.google.cloud.vision.v1.all-services.enabled=false",
+                        "com.google.cloud.vision.v1.product-search.enabled=true"
+
                 )
                 .run(
                         ctx -> {
                             for (String bean : ctx.getBeanDefinitionNames()) {
                                 System.out.println(bean);
                             }
+                            // Expected:
+                            // ImageAnnotatorClient autoconfiguration disabled (blanketly)
+                            // ProductSearchClient autoconfiguration enabled (explicitly)
                             ProductSearchClient productSearchClient = ctx.getBean(ProductSearchClient.class);
                             assertThat(productSearchClient).isNotNull();
                             assertThatThrownBy(

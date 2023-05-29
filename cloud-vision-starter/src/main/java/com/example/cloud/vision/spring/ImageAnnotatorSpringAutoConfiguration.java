@@ -55,7 +55,7 @@ public class ImageAnnotatorSpringAutoConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingBean(name = "defaultImageAnnotatorTransportChannelProvider")
   public TransportChannelProvider defaultImageAnnotatorTransportChannelProvider() {
     if (this.clientProperties.getUseRest()) {
       return ImageAnnotatorSettings.defaultHttpJsonTransportProviderBuilder().build();

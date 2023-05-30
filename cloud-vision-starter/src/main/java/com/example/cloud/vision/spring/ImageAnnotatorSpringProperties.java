@@ -1,5 +1,6 @@
 package com.example.cloud.vision.spring;
 
+import com.example.cloud.vision.spring.Shared;
 import com.google.cloud.spring.core.Credentials;
 import com.google.cloud.spring.core.CredentialsSupplier;
 import com.google.cloud.spring.core.Retry;
@@ -17,7 +18,8 @@ public class ImageAnnotatorSpringProperties implements CredentialsSupplier {
 
   private String quotaProjectId;
   private Integer executorThreadCount;
-  private boolean useRest = false;
+  //  private boolean useRest = false;
+  private Shared.TransportType transport = Shared.TransportType.GRPC;
   @NestedConfigurationProperty private Retry retry;
   @NestedConfigurationProperty private Retry batchAnnotateImagesRetry;
   @NestedConfigurationProperty private Retry batchAnnotateFilesRetry;
@@ -43,8 +45,17 @@ public class ImageAnnotatorSpringProperties implements CredentialsSupplier {
     this.executorThreadCount = executorThreadCount;
   }
 
-  public boolean getUseRest() {
-    return useRest;
+//  public boolean getUseRest() {
+//    return useRest;
+//  }
+
+
+  public Shared.TransportType getTransport() {
+    return transport;
+  }
+
+  public void setTransport(Shared.TransportType transport) {
+    this.transport = transport;
   }
 
   public Retry getRetry() {

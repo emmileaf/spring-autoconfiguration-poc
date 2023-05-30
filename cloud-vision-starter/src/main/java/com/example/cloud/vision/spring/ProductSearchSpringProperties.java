@@ -17,7 +17,8 @@ public class ProductSearchSpringProperties implements CredentialsSupplier {
 
   private String quotaProjectId;
   private Integer executorThreadCount;
-  private boolean useRest = false;
+//  private boolean useRest = false;
+  private Shared.TransportType transport = Shared.TransportType.GRPC;
   @NestedConfigurationProperty private Retry retry;
   @NestedConfigurationProperty private Retry createProductRetry;
   @NestedConfigurationProperty private Retry getProductRetry;
@@ -43,8 +44,16 @@ public class ProductSearchSpringProperties implements CredentialsSupplier {
     this.executorThreadCount = executorThreadCount;
   }
 
-  public boolean getUseRest() {
-    return useRest;
+//  public boolean getUseRest() {
+//    return useRest;
+//  }
+
+  public Shared.TransportType getTransport() {
+    return transport;
+  }
+
+  public void setTransport(Shared.TransportType transport) {
+    this.transport = transport;
   }
 
   public Retry getRetry() {
